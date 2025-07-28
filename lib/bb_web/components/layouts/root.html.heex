@@ -26,13 +26,13 @@
         <!-- Sidebar -->
         <aside class="bg-slate-500 fixed top-20 left-0 h-screen transition-all duration-300 peer-checked:w-0 w-64 overflow-hidden">
           <ul class="ml-3 mt-4 space-y-2">
-            <li><.link navigate={~p"/"}>Home</.link></li>
-            <li><.link navigate={~p"/dashboard"}>Dashboard</.link></li>
-            <li><.link navigate={~p"/settings"}>Settings</.link></li>
+            <li><.link navigate={~p"/"} class={[@conn.request_path == ~p"/" && "font-bold text-white", "text-gray-300"]}>Home</.link></li>
+            <li><.link navigate={~p"/books"} class={[@conn.request_path == ~p"/books" && "font-bold text-white", "text-gray-300"]}>Books</.link></li>
+            <li><.link navigate={~p"/users/settings"} class={[@conn.request_path == ~p"/users/settings" && "font-bold text-white", "text-gray-300"]}>Settings</.link></li>
           </ul>
         </aside>
         </li>
-        
+
         <!-- profile picture and logout menu-->
 <li>
 <div class="relative ml-3 group">
