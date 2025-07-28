@@ -16,7 +16,12 @@
 
 <.back navigate={~p"/item_stocks"}>Back to item_stocks</.back>
 
-<.modal :if={@live_action == :edit} id="item_stock-modal" show on_cancel={JS.patch(~p"/item_stocks/#{@item_stock}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="item_stock-modal"
+  show
+  on_cancel={JS.patch(~p"/item_stocks/#{@item_stock}")}
+>
   <.live_component
     module={BbWeb.ItemStockLive.FormComponent}
     id={@item_stock.id}

@@ -7,20 +7,20 @@ defmodule BbWeb.ItemStockLive.Index do
   @impl true
 
   def mount(_params, %{"user_token" => token}, socket) do
-
-    #IO.inspect(token, label: "this is a message")
+    # IO.inspect(token, label: "this is a message")
     user = Bb.Accounts.get_user_by_session_token(token)
     IO.inspect(user)
+
     if user.role == "admin" do
       {:ok, stream(socket, :item_stocks, Inventory.list_item_stocks())}
     else
       {:ok,
-        socket
-        |> put_flash(:error, "Access denied.")
-        |> push_navigate(to: "/")}
+       socket
+       |> put_flash(:error, "Access denied.")
+       |> push_navigate(to: "/")}
     end
 
-    #{:ok, stream(socket, :item_stocks, Inventory.list_item_stocks())}
+    # {:ok, stream(socket, :item_stocks, Inventory.list_item_stocks())}
   end
 
   @impl true

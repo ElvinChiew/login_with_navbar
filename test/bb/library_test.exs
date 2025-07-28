@@ -35,7 +35,12 @@ defmodule Bb.LibraryTest do
 
     test "update_book/2 with valid data updates the book" do
       book = book_fixture()
-      update_attrs = %{title: "some updated title", author: "some updated author", published_year: 43}
+
+      update_attrs = %{
+        title: "some updated title",
+        author: "some updated author",
+        published_year: 43
+      }
 
       assert {:ok, %Book{} = book} = Library.update_book(book, update_attrs)
       assert book.title == "some updated title"

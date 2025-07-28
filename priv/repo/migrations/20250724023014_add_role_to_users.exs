@@ -5,6 +5,5 @@ defmodule Bb.Repo.Migrations.AddRoleToUsers do
     alter table(:users) do
       add :role, :string, default: "user"
     end
-
   end
 end

@@ -37,7 +37,9 @@ defmodule Bb.InventoryTest do
       item_stock = item_stock_fixture()
       update_attrs = %{name: "some updated name", location: "some updated location", quantity: 43}
 
-      assert {:ok, %ItemStock{} = item_stock} = Inventory.update_item_stock(item_stock, update_attrs)
+      assert {:ok, %ItemStock{} = item_stock} =
+               Inventory.update_item_stock(item_stock, update_attrs)
+
       assert item_stock.name == "some updated name"
       assert item_stock.location == "some updated location"
       assert item_stock.quantity == 43

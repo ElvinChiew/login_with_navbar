@@ -22,7 +22,7 @@ defmodule BbWeb.Router do
 
     get "/", PageController, :home
 
-    #books
+    # books
     live "/books", BookLive.Index, :index
     live "/books/new", BookLive.Index, :new
     live "/books/:id/edit", BookLive.Index, :edit
@@ -30,7 +30,7 @@ defmodule BbWeb.Router do
     live "/books/:id", BookLive.Show, :show
     live "/books/:id/show/edit", BookLive.Show, :edit
 
-    #items_stock
+    # items_stock
     live "/item_stocks", ItemStockLive.Index, :index
     live "/item_stocks/new", ItemStockLive.Index, :new
     live "/item_stocks/:id/edit", ItemStockLive.Index, :edit
