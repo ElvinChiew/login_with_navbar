@@ -9,6 +9,8 @@ defmodule Bb.Accounts.User do
     field :current_password, :string, virtual: true, redact: true
     field :role, :string
     field :confirmed_at, :utc_datetime
+    field :name, :string
+    field :dob, :date
 
     timestamps(type: :utc_datetime)
   end
@@ -38,7 +40,7 @@ defmodule Bb.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :name, :dob])
     |> validate_email(opts)
     |> validate_password(opts)
   end

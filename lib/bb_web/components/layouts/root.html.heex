@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
     <head>
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-        integrity="sha512-..."
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-      />
-    </head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
 
     <.live_title default="Bb" suffix=" · Phoenix Framework">
       {assigns[:page_title]}
@@ -21,112 +16,129 @@
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
   </head>
-  <body class="bg-white">
-    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-between">
+  <body class="bg-white w-screen">
+    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-between bg-sky-700 py-3">
       <%= if @current_user do %>
-        <li>
-          <!-- Toggle Checkbox -->
-          <input type="checkbox" id="menu-toggle" class="peer hidden" />
-          
-<!-- Label as Toggle Button -->
-          <label for="menu-toggle" class="cursor-pointer ml-3 mt-3 block left-0">
-            ☰ Menu
-          </label>
-          
-<!-- Sidebar -->
-          <aside class="bg-slate-500 fixed top-10 left-0 h-screen transition-all duration-300 peer-checked:w-0 w-64 overflow-hidden">
-            <ul class="ml-3 mt-4 space-y-2">
-              <li>
-                <.link
-                  navigate={~p"/"}
-                  class={[@conn.request_path == ~p"/" && "font-bold text-white", "text-gray-300"]}
-                >
-                  Home<i class="fa fa-home" aria-hidden="true"></i>
-                </.link>
-              </li>
-              <li>
-                <.link
-                  navigate={~p"/books/extra"}
-                  class={[
-                    @conn.request_path == ~p"/books/extra" && "font-bold text-white",
-                    "text-gray-300"
-                  ]}
-                >
-                  Extra<i class="fa fa-plus-circle" aria-hidden="true"></i>
-                </.link>
-              </li>
-              <li>
-                <.link
-                  navigate={~p"/users/settings"}
-                  class={[
-                    @conn.request_path == ~p"/users/settings" && "font-bold text-white",
-                    "text-gray-300"
-                  ]}
-                >
-                  Settings<i class="fa fa-wrench" aria-hidden="true"></i>
-                </.link>
-              </li>
-            </ul>
-          </aside>
-        </li>
-        
-<!-- profile picture and logout menu-->
-        <li>
-          <div class="relative ml-3 group">
-            <!-- Trigger Button -->
-            <button
-              class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
-              id="user-menu-button"
-              aria-expanded="false"
-              aria-haspopup="true"
-            >
-              <span class="absolute -inset-1.5"></span>
-              <span class="sr-only">Open user menu</span>
-              <img
-                class="size-8 rounded-full"
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt=""
-              />
-            </button>
-            
-<!-- Dropdown Menu -->
-            <div
-              class="invisible opacity-0 absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition ease-out duration-100 group-hover:visible group-hover:opacity-100"
-              role="menu"
-              aria-orientation="vertical"
-              aria-labelledby="user-menu-button"
-              tabindex="-1"
-            >
-              <a
-                href="#"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-                role="menuitem"
-                tabindex="-1"
-              >
-                {@current_user.email}
-              </a>
-              <a
-                href={~p"/users/settings"}
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-                role="menuitem"
-                tabindex="-1"
-              >
-                Settings
-              </a>
+  <div class="flex w-full items-center justify-between">
+  <li>
+  <!-- Toggle Checkbox -->
+  <input type="checkbox" id="menu-toggle" class="peer hidden" />
 
-              <.link
-                href={~p"/users/log_out"}
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-                role="menuitem"
-                tabindex="-1"
-                method="delete"
-              >
-                Log out
-              </.link>
-            </div>
-          </div>
+  <!-- Label as Toggle Button (Hamburger) -->
+  <label for="menu-toggle" class="cursor-pointer ml-3 mt-3 block text-lg font-medium text-gray-700 hover:text-gray-900 transition z-30 relative">
+    ☰ Menu
+  </label>
+
+  <!-- Sidebar -->
+  <aside class="fixed top-0 left-0 h-screen bg-slate-800 shadow-lg z-40 transition-all duration-300 ease-in-out w-64 peer-checked:w-0 overflow-hidden">
+    <div class="flex items-center justify-between px-4 py-4 border-b border-slate-700">
+      <h2 class="text-white text-xl font-semibold">Dashboard</h2>
+      
+      <!-- Close Button (X) -->
+      <label for="menu-toggle" class="cursor-pointer text-white text-2xl hover:text-gray-300 transition">
+        &times;
+      </label>
+    </div>
+
+    <ul class="mt-4 px-4 space-y-3">
+      <li>
+        <.link
+          navigate={~p"/"}
+          class={[@conn.request_path == ~p"/" && "bg-slate-700 text-white", "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"]}
+        >
+          <i class="fa fa-home"></i>
+          Home
+        </.link>
+      </li>
+      <li>
+        <.link
+          navigate={~p"/books/extra"}
+          class={[@conn.request_path == ~p"/books/extra" && "bg-slate-700 text-white", "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"]}
+        >
+          <i class="fa fa-plus-circle"></i>
+          Extra
+        </.link>
+      </li>
+      <li>
+        <.link
+          navigate={~p"/users/settings"}
+          class={[@conn.request_path == ~p"/users/settings" && "bg-slate-700 text-white", "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"]}
+        >
+          <i class="fa fa-wrench"></i>
+          Settings
+        </.link>
+      </li>
+      <%= if @current_user.role == "admin" do %>
+        <li>
+          <.link
+            navigate={~p"/item_stocks"}
+            class={[@conn.request_path == ~p"/item_stocks" && "bg-slate-700 text-white", "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"]}
+          >
+            <i class="fa fa-boxes"></i>
+            Item Stocks
+          </.link>
         </li>
+      <% end %>
+    </ul>
+  </aside>
+</li>
+
+
+        <!-- profile picture and logout menu-->
+<li>
+<div class="relative ml-3 group">
+  <!-- Trigger Button -->
+  <button
+    class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
+    id="user-menu-button"
+    aria-expanded="false"
+    aria-haspopup="true"
+  >
+    <span class="absolute -inset-1.5"></span>
+    <span class="sr-only">Open user menu</span>
+    <img
+      class="size-8 rounded-full"
+      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+      alt=""
+    />
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div
+    class="invisible opacity-0 absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition ease-out duration-100 group-hover:visible group-hover:opacity-100"
+    role="menu"
+    aria-orientation="vertical"
+    aria-labelledby="user-menu-button"
+    tabindex="-1"
+  >
+    <a
+      href="#"
+      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+      role="menuitem"
+      tabindex="-1"
+      >{@current_user.name}</a>
+    <a
+      href={~p"/users/settings"}
+      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+      role="menuitem"
+      tabindex="-1"
+      >
+      Settings</a>
+
+    <.link
+      href={~p"/users/log_out"}
+      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+      role="menuitem"
+      tabindex="-1"
+      method="delete"
+      >Log out</.link>
+  </div>
+</div>
+
+        </li>
+        </div>
       <% else %>
+  <div class="flex w-full items-center justify-end gap-4">
         <li>
           <.link
             href={~p"/users/register"}
@@ -142,8 +154,10 @@
           >
             Log in
           </.link>
-        </li>
-      <% end %>
+        </li>      
+        </div>
+      <% end %>        
+
     </ul>
     {@inner_content}
   </body>

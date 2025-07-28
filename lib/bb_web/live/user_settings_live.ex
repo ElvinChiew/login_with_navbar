@@ -7,8 +7,30 @@ defmodule BbWeb.UserSettingsLive do
     ~H"""
     <.header class="text-center">
       Account Settings
-      <:subtitle>Manage your account email address and password settings</:subtitle>
+    <:subtitle>Manage your account email address and password settings</:subtitle>
     </.header>
+    <div>
+    <.simple_form
+    for={@name_form}
+    id="name_form"
+    phx-submit="update_name"
+    phx-change="validate_name"
+    >
+    <.input field={@name_form[:name]} type="text" label="Full name" required />
+    <.input
+      field={@name_form[:current_password]}
+      name="current_password"
+      type="password"
+      label="Current password"
+      id="current_password_for_name"
+      value={@name_form_current_password}
+      required
+    />
+    <:actions>
+      <.button phx-disable-with="Changing...">Update Name</.button>
+    </:actions>
+    </.simple_form>
+    </div>
 
     <div class="space-y-12 divide-y">
       <div>
@@ -90,6 +112,7 @@ defmodule BbWeb.UserSettingsLive do
     user = socket.assigns.current_user
     email_changeset = Accounts.change_user_email(user)
     password_changeset = Accounts.change_user_password(user)
+    name_changeset = Accounts.change_user_name(user)
 
     socket =
       socket
