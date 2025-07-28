@@ -1,0 +1,28 @@
+<.header>
+  Item stock {@item_stock.id}
+  <:subtitle>This is a item_stock record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/item_stocks/#{@item_stock}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit item_stock</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name">{@item_stock.name}</:item>
+  <:item title="Quantity">{@item_stock.quantity}</:item>
+  <:item title="Location">{@item_stock.location}</:item>
+</.list>
+
+<.back navigate={~p"/item_stocks"}>Back to item_stocks</.back>
+
+<.modal :if={@live_action == :edit} id="item_stock-modal" show on_cancel={JS.patch(~p"/item_stocks/#{@item_stock}")}>
+  <.live_component
+    module={BbWeb.ItemStockLive.FormComponent}
+    id={@item_stock.id}
+    title={@page_title}
+    action={@live_action}
+    item_stock={@item_stock}
+    patch={~p"/item_stocks/#{@item_stock}"}
+  />
+</.modal>

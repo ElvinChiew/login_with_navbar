@@ -1,0 +1,43 @@
+<.header>
+  Listing Item stocks
+  <:actions>
+    <.link patch={~p"/item_stocks/new"}>
+      <.button>New Item stock</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="item_stocks"
+  rows={@streams.item_stocks}
+  row_click={fn {_id, item_stock} -> JS.navigate(~p"/item_stocks/#{item_stock}") end}
+>
+  <:col :let={{_id, item_stock}} label="Name">{item_stock.name}</:col>
+  <:col :let={{_id, item_stock}} label="Quantity">{item_stock.quantity}</:col>
+  <:col :let={{_id, item_stock}} label="Location">{item_stock.location}</:col>
+  <:action :let={{_id, item_stock}}>
+    <div class="sr-only">
+      <.link navigate={~p"/item_stocks/#{item_stock}"}>Show</.link>
+    </div>
+    <.link patch={~p"/item_stocks/#{item_stock}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, item_stock}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: item_stock.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="item_stock-modal" show on_cancel={JS.patch(~p"/item_stocks")}>
+  <.live_component
+    module={BbWeb.ItemStockLive.FormComponent}
+    id={@item_stock.id || :new}
+    title={@page_title}
+    action={@live_action}
+    item_stock={@item_stock}
+    patch={~p"/item_stocks"}
+  />
+</.modal>

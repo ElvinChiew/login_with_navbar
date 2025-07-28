@@ -1,0 +1,14 @@
+defmodule BbWeb.Layouts do
+  @moduledoc """
+  This module holds different layouts used by your application.
+
+  See the `layouts` directory for all templates available.
+  The "root" layout is a skeleton rendered as part of the
+  application router. The "app" layout is set as the default
+  layout on both `use BbWeb, :controller` and
+  `use BbWeb, :live_view`.
+  """
+  use BbWeb, :html
+
+  embed_templates "layouts/*"
+end
