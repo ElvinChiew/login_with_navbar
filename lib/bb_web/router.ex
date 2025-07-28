@@ -27,6 +27,9 @@ defmodule BbWeb.Router do
     live "/books/new", BookLive.Index, :new
     live "/books/:id/edit", BookLive.Index, :edit
 
+    # adding extra pages
+    live "/books/extra", BookLive.Extra
+
     live "/books/:id", BookLive.Show, :show
     live "/books/:id/show/edit", BookLive.Show, :edit
 
