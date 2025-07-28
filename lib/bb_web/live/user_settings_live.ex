@@ -69,7 +69,6 @@ defmodule BbWeb.UserSettingsLive do
           </:actions>
         </.simple_form>
       </div>
-
     </div>
     """
   end

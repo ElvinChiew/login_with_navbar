@@ -36,7 +36,6 @@ defmodule BbWeb.UserRegistrationLive do
         <.input field={@form[:dob]} type="date" label="Date of birth" required />
         <.input field={@form[:password]} type="password" label="Password" required />
 
-
         <:actions>
           <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
         </:actions>
