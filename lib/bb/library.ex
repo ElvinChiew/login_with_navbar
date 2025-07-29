@@ -101,4 +101,33 @@ defmodule Bb.Library do
   def change_book(%Book{} = book, attrs \\ %{}) do
     Book.changeset(book, attrs)
   end
+
+  def list_books(params) when is_map(params) do
+    page = Map.get(params, "page", "1") |> String.to_integer()
+    per_page = 10
+    offset = (page - 1) * per_page
+
+    query = Book
+
+    total_count = Repo.aggregate(query, :count, :id)
+
+    books =
+      query
+      |> limit(^per_page)
+      |> offset(^offset)
+      |> Repo.all()
+
+    total_pages = div(total_count + per_page - 1, per_page)
+
+    metadata = %{
+      page: page,
+      total_pages: total_pages,
+      total_count: total_count
+    }
+
+    {books, metadata}
+  end
+
+  # Backward-compatible clause
+  def list_books(), do: list_books(%{})
 end

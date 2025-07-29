@@ -6,12 +6,26 @@ defmodule BbWeb.BookLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :books, Library.list_books())}
+    # {:ok, stream(socket, :books, Library.list_books())}
+    {:ok, assign(socket, page: 1)}
   end
 
   @impl true
   def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+    page = Map.get(params, "page", "1") |> String.to_integer()
+
+    {books, metadata} = Library.list_books(%{"page" => Integer.to_string(page)})
+
+    socket =
+      socket
+      |> assign(:page, metadata.page)
+      |> assign(:total_pages, metadata.total_pages)
+      |> assign(:has_prev, metadata.page > 1)
+      |> assign(:has_next, metadata.page < metadata.total_pages)
+      |> stream(:books, books, reset: true)
+      |> apply_action(socket.assigns.live_action, params)
+
+    {:noreply, socket}
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do

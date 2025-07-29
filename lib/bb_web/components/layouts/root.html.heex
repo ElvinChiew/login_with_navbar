@@ -4,223 +4,144 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <head>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js">
-      </script>
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-        integrity="sha512-..."
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-      />
-    </head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
 
     <.live_title default="Bb" suffix=" · Phoenix Framework">
       {assigns[:page_title]}
     </.live_title>
+
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
-    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
-    </script>
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}></script>
   </head>
+
   <body class="bg-white w-screen">
-    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-between bg-slate-800 py-3">
+
+    <!-- Sticky Navbar -->
+    <nav class="sticky top-0 w-full bg-slate-800 z-10 px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
       <%= if @current_user do %>
-        <div class="flex w-full items-center justify-between">
-          <li>
-            <!-- Toggle Checkbox -->
-            <input type="checkbox" id="menu-toggle" class="peer hidden" />
-            
-<!-- Label as Toggle Button (Hamburger) -->
-            <label
-              for="menu-toggle"
-              class="cursor-pointer ml-3 mt-3 block text-lg font-medium text-white hover:text-zinc-300 transition z-30 relative"
-            >
-              ☰ Menu
-            </label>
-            
-<!-- Sidebar -->
-            <aside class="fixed top-0 left-0 h-screen bg-slate-800 shadow-lg z-40 transition-all duration-300 ease-in-out w-64 peer-checked:w-0 overflow-hidden">
-              <div class="flex items-center justify-between px-4 py-4 border-b border-slate-700">
-                <h2 class="text-white text-xl font-semibold">Dashboard</h2>
-                
-<!-- Close Button (X) -->
-                <label
-                  for="menu-toggle"
-                  class="cursor-pointer text-white text-2xl hover:text-gray-300 transition"
-                >
-                  &times;
-                </label>
-              </div>
+        <!-- Left: Hamburger Toggle -->
+        <div class="flex items-center gap-4">
+          <label
+            for="menu-toggle"
+            class="cursor-pointer text-2xl font-medium text-white hover:text-zinc-300 transition z-30 relative border border-white px-3 py-3 rounded-md">
+            ☰
+          </label>
+        </div>
 
-              <ul class="mt-4 px-4 space-y-3">
-                <li>
-                  <.link
-                    navigate={~p"/"}
-                    class={[
-                      @conn.request_path == ~p"/" && "bg-slate-700 text-white",
-                      "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"
-                    ]}
-                  >
-                    <i class="fa fa-home"></i> Home
-                  </.link>
-                </li>
-                <li>
-                  <.link
-                    navigate={~p"/books/extra"}
-                    class={[
-                      @conn.request_path == ~p"/books/extra" && "bg-slate-700 text-white",
-                      "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"
-                    ]}
-                  >
-                    <i class="fa fa-plus-circle"></i> Extra
-                  </.link>
-                </li>
-                <li>
-                  <.link
-                    navigate={~p"/users/settings"}
-                    class={[
-                      @conn.request_path == ~p"/users/settings" && "bg-slate-700 text-white",
-                      "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"
-                    ]}
-                  >
-                    <i class="fa fa-wrench"></i> Settings
-                  </.link>
-                </li>
-<li class="relative">
-  <!-- Hidden checkbox to hold state -->
-  <input type="checkbox" id="extra-toggle" class="hidden peer" />
+        <!-- Right: Profile Menu -->
+<!-- Hidden Checkbox as Toggle -->
+<div class="relative">
+  <input type="checkbox" id="user-menu-toggle" class="peer hidden" />
 
-  <!-- Label acts as the dropdown trigger -->
-  <label
-    for="extra-toggle"
-    class="flex items-center justify-between px-4 py-2 text-gray-300 rounded-lg hover:bg-slate-600 cursor-pointer transition"
-  >
-    <span class="flex items-center gap-3">
-      <i class="fa fa-cubes"></i> Dropdown Menu
-    </span>
-    <i class="fa fa-chevron-down"></i>
+  <!-- Clickable Avatar (Label for Checkbox) -->
+  <label for="user-menu-toggle" class="cursor-pointer">
+    <img
+      class="size-8 rounded-full bg-gray-800"
+      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+      alt="User avatar" />
   </label>
 
-  <!-- Submenu: shown only when checkbox is checked -->
-  <ul class="ml-6 mt-2 hidden peer-checked:block space-y-2 text-sm">
-    <li>
-      <.link
-        navigate={~p"/books/bookpage"}
-        class={[@conn.request_path == ~p"/books/bookpage" && "bg-slate-700 text-white",
-                        "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"]}
-      >
-        Books Pagination
-      </.link>
-    </li>
-    <li>
-      <.link
-        navigate={~p"/books"}
-        class={[@conn.request_path == ~p"/books" && "bg-slate-700 text-white",
-                        "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"]}
-      >
-        Books
-      </.link>
-    </li>
-  </ul>
-</li>
-
-                <%= if @current_user.role == "admin" do %>
-                  <li>
-                    <.link
-                      navigate={~p"/item_stocks"}
-                      class={[
-                        @conn.request_path == ~p"/item_stocks" && "bg-slate-700 text-white",
-                        "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"
-                      ]}
-                    >
-                      <i class="fa fa-boxes"></i> Item Stocks
-                    </.link>
-                  </li>
-                <% end %>
-              </ul>
-            </aside>
-          </li>
-          
-<!-- profile picture and logout menu-->
-<li>
-  <div class="relative ml-3">
-    <!-- Trigger Button with hidden checkbox -->
-    <input type="checkbox" id="user-menu-toggle" class="peer hidden" />
-
-    <!-- Profile Button -->
-    <label
-      for="user-menu-toggle"
-      class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 cursor-pointer"
-    >
-      <span class="absolute -inset-1.5"></span>
-      <span class="sr-only">Open user menu</span>
-      <img
-        class="size-8 rounded-full"
-        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-        alt="Profile picture"
-      />
-    </label>
-    
-    <!-- Dropdown Menu, visible when checkbox is checked -->
-    <div
-      class="peer-checked:block hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition ease-out duration-100"
-      role="menu"
-      aria-orientation="vertical"
-      aria-labelledby="user-menu-button"
-      tabindex="-1"
-    >
-      <a
-        href="#"
-        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-        role="menuitem"
-        tabindex="-1"
-      >
-        {@current_user.name}
-      </a>
-      <a
-        href={~p"/users/settings"}
-        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-        role="menuitem"
-        tabindex="-1"
-      >
-        Settings
-      </a>
-      <.link
-        href={~p"/users/log_out"}
-        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-        role="menuitem"
-        tabindex="-1"
-        method="delete"
-      >
-        Log out
-      </.link>
-    </div>
+  <!-- Dropdown Menu -->
+  <div
+    class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5
+           opacity-0 invisible peer-checked:visible peer-checked:opacity-100 transition ease-out duration-150">
+    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+      {@current_user.name}
+    </a>
+    <a href={~p"/users/settings"} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+      Settings
+    </a>
+    <.link href={~p"/users/log_out"} method="delete" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+      Log out
+    </.link>
   </div>
-</li>
+</div>
 
-        </div>
       <% else %>
-        <div class="flex w-full items-center justify-end gap-4">
-          <li>
-            <.link
-              href={~p"/users/register"}
-              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-            >
-              Register
-            </.link>
-          </li>
-          <li>
-            <.link
-              href={~p"/users/log_in"}
-              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-            >
-              Log in
-            </.link>
-          </li>
+        <!-- Right: Login/Register -->
+        <div class="flex items-center gap-4">
+          <.link href={~p"/users/register"} class="text-sm font-semibold text-white hover:text-zinc-300">
+            Register
+          </.link>
+          <.link href={~p"/users/log_in"} class="text-sm font-semibold text-white hover:text-zinc-300">
+            Log in
+          </.link>
         </div>
       <% end %>
-    </ul>
+    </nav>
+
+    <!-- Sidebar (Only shown if logged in) -->
+    <%= if @current_user do %>
+      <input type="checkbox" id="menu-toggle" class="peer hidden" />
+
+      <aside class="fixed top-0 left-0 h-screen bg-slate-800 shadow-lg z-40 transition-all duration-300 ease-in-out w-64 peer-checked:w-0 overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-4 border-b border-slate-700">
+          <h2 class="text-white text-xl font-semibold">Dashboard</h2>
+          <label for="menu-toggle" class="cursor-pointer text-white text-2xl hover:text-gray-300 transition">
+            &times;
+          </label>
+        </div>
+
+        <ul class="mt-4 px-4 space-y-3">
+          <li>
+            <.link navigate={~p"/"} class={[@conn.request_path == ~p"/" && "bg-slate-700 text-white", "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"]}>
+              <i class="fa fa-home"></i> Home
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/books/extra"} class={[@conn.request_path == ~p"/books/extra" && "bg-slate-700 text-white", "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"]}>
+              <i class="fa fa-plus-circle"></i> Extra
+            </.link>
+          </li>
+          <li>
+            <.link navigate={~p"/users/settings"} class={[@conn.request_path == ~p"/users/settings" && "bg-slate-700 text-white", "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"]}>
+              <i class="fa fa-wrench"></i> Settings
+            </.link>
+          </li>
+
+          <!-- Dropdown -->
+          <li class="relative">
+            <input type="checkbox" id="extra-toggle" class="hidden peer" />
+            <label for="extra-toggle" class="flex items-center justify-between px-4 py-2 text-gray-300 rounded-lg hover:bg-slate-600 cursor-pointer transition">
+              <span class="flex items-center gap-3">
+                <i class="fa fa-cubes"></i> Dropdown Menu
+              </span>
+              <i class="fa fa-chevron-down"></i>
+            </label>
+          <ul class="ml-6 mt-2 hidden peer-checked:block space-y-2 text-sm">
+            <li>
+              <.link navigate={~p"/books/bookpage"} class={[@conn.request_path == ~p"/books/bookpage" && "bg-slate-700 text-white", "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"]}>
+                Books Pagination
+              </.link>
+            </li>
+
+            <%= if @current_user.role == "admin" do %>
+              <li>
+                <.link navigate={~p"/books"} class={[@conn.request_path == ~p"/books" && "bg-slate-700 text-white", "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"]}>
+                  Books
+                </.link>
+              </li>
+            <% end %>
+          </ul>
+          </li>
+
+          <%= if @current_user.role == "admin" do %>
+            <li>
+              <.link navigate={~p"/item_stocks"} class={[@conn.request_path == ~p"/item_stocks" && "bg-slate-700 text-white", "flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-slate-600 transition"]}>
+                <i class="fa fa-boxes"></i> Item Stocks
+              </.link>
+            </li>
+          <% end %>
+        </ul>
+      </aside>
+    <% end %>
+
+    <!-- Main Content -->
     {@inner_content}
   </body>
 </html>
