@@ -6,15 +6,19 @@ defmodule BbWeb.BookLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    # {:ok, stream(socket, :books, Library.list_books())}
-    {:ok, assign(socket, page: 1)}
+    years = Library.list_years()
+    {:ok, assign(socket, page: 1, years: years, selected_year: nil)}
   end
 
   @impl true
   def handle_params(params, _url, socket) do
     page = Map.get(params, "page", "1") |> String.to_integer()
+    selected_year = Map.get(params, "year")
 
-    {books, metadata} = Library.list_books(%{"page" => Integer.to_string(page)})
+    list_opts = %{"page" => Integer.to_string(page)}
+    list_opts = if selected_year, do: Map.put(list_opts, "year", selected_year), else: list_opts
+
+    {books, metadata} = Library.list_books(list_opts)
 
     socket =
       socket
@@ -22,12 +26,39 @@ defmodule BbWeb.BookLive.Index do
       |> assign(:total_pages, metadata.total_pages)
       |> assign(:has_prev, metadata.page > 1)
       |> assign(:has_next, metadata.page < metadata.total_pages)
+      |> assign(:selected_year, selected_year)
       |> stream(:books, books, reset: true)
       |> apply_action(socket.assigns.live_action, params)
 
     {:noreply, socket}
   end
 
+  @impl true
+def handle_event("filter", %{"filter" => %{"year" => year}}, socket) do
+  {:noreply, push_patch(socket, to: ~p"/books?page=1&year=#{year}")}
+end
+
+  @impl true
+  def handle_info({BbWeb.BookLive.FormComponent, {:saved, book}}, socket) do
+    years = Library.list_years()
+    {:noreply,
+     socket
+     |> assign(:years, years)
+     |> stream_insert(:books, book)}
+  end
+
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    book = Library.get_book!(id)
+    {:ok, _} = Library.delete_book(book)
+
+    years = Library.list_years()
+
+    {:noreply,
+     socket
+     |> assign(:years, years)
+     |> stream_delete(:books, book)}
+  end
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Book")
@@ -44,18 +75,5 @@ defmodule BbWeb.BookLive.Index do
     socket
     |> assign(:page_title, "Listing Books")
     |> assign(:book, nil)
-  end
-
-  @impl true
-  def handle_info({BbWeb.BookLive.FormComponent, {:saved, book}}, socket) do
-    {:noreply, stream_insert(socket, :books, book)}
-  end
-
-  @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    book = Library.get_book!(id)
-    {:ok, _} = Library.delete_book(book)
-
-    {:noreply, stream_delete(socket, :books, book)}
   end
 end

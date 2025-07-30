@@ -1,4 +1,5 @@
 defmodule BbWeb.BookLive.Bookpage do
+alias Bb.Library
   use BbWeb, :live_view
 
   alias Bb.Repo
@@ -9,7 +10,9 @@ defmodule BbWeb.BookLive.Bookpage do
   @page_size 10
 
   def mount(_params, _session, socket) do
-    {:ok, assign_defaults(socket)}
+    #{:ok, assign_defaults(socket)}
+    years = Library.list_years()
+    {:ok, assign(socket, page: 1, years: years, selected_year: nil)}
   end
 
   def handle_params(%{"page" => page_param}, _uri, socket) do

@@ -106,8 +106,11 @@ defmodule Bb.Library do
     page = Map.get(params, "page", "1") |> String.to_integer()
     per_page = 10
     offset = (page - 1) * per_page
+    year = Map.get(params, "year")
 
-    query = Book
+    query =
+      Book
+      |> maybe_filter_year(year)
 
     total_count = Repo.aggregate(query, :count, :id)
 
@@ -128,6 +131,21 @@ defmodule Bb.Library do
     {books, metadata}
   end
 
+  defp maybe_filter_year(query, nil), do: query
+  defp maybe_filter_year(query, ""), do: query
+  defp maybe_filter_year(query, year), do: where(query, [b], b.published_year == ^year)
+
+  # Fallback
+  def list_books(), do: list_books(%{})
   # Backward-compatible clause
   def list_books(), do: list_books(%{})
+
+  def list_years do
+    Book
+    |> select([b], b.published_year)
+    |> distinct(true)
+    |> order_by(:published_year)
+    |> Repo.all()
+  end
+
 end
