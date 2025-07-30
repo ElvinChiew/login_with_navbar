@@ -16,6 +16,21 @@
     </h2>
      <span class="text-sm text-gray-500">Total books: {@total_count}</span>
   </div>
+
+<!-- Filter Dropdown -->
+<div class="flex justify-end items-center mb-4">
+  <.form :let={f} for={%{}} as={:filter} phx-change="filter">
+    <label for="year" class="mr-2 font-medium">Filter by Year:</label>
+    <select name="filter[year]" id="year" class="border rounded px-2 py-1 pr-10">
+      <option value="">All years</option>
+      <%= for year <- @years do %>
+        <option value={year} selected={to_string(year) == @selected_year}>
+          <%= year %>
+        </option>
+      <% end %>
+    </select>
+  </.form>
+</div>
   
 <!-- Book Table -->
   <div class="overflow-x-auto shadow rounded-lg border border-gray-200">
