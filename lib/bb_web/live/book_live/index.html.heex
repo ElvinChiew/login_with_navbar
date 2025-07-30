@@ -11,17 +11,36 @@
 
 <div class="mb-4">
   <.form :let={f} for={%{}} as={:filter} phx-change="filter">
-    <label for="year" class="mr-2 font-medium">Filter by Year:</label>
-    <select name="filter[year]" id="year" class="border rounded px-2 py-1 pr-10">
-      <option value="">All years</option>
-      <%= for year <- @years do %>
-        <option value={year} selected={to_string(year) == @selected_year}>
-          <%= year %>
-        </option>
-      <% end %>
-    </select>
+    <div class="flex items-center gap-4">
+      <!-- Year dropdown -->
+      <div>
+        <label for="year" class="mr-2 font-medium">Filter by Year:</label>
+        <select name="filter[year]" id="year" class="border rounded px-2 py-1 pr-10">
+          <option value="">All years</option>
+          <%= for year <- @years do %>
+            <option value={year} selected={to_string(year) == @selected_year}>
+              <%= year %>
+            </option>
+          <% end %>
+        </select>
+      </div>
+
+      <!-- Search input -->
+      <div>
+        <label for="search" class="mr-2 font-medium">Search:</label>
+        <input
+          type="text"
+          name="filter[search]"
+          id="search"
+          value={@search_query}
+          class="border rounded px-2 py-1"
+          placeholder="Search by title or author"
+        />
+      </div>
+    </div>
   </.form>
 </div>
+
 
 
 

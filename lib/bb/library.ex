@@ -102,38 +102,48 @@ defmodule Bb.Library do
     Book.changeset(book, attrs)
   end
 
-  def list_books(params) when is_map(params) do
-    page = Map.get(params, "page", "1") |> String.to_integer()
-    per_page = 10
-    offset = (page - 1) * per_page
-    year = Map.get(params, "year")
+def list_books(params) when is_map(params) do
+  page = Map.get(params, "page", "1") |> String.to_integer()
+  per_page = 10
+  offset = (page - 1) * per_page
+  year = Map.get(params, "year")
+  search = Map.get(params, "search", "")
 
-    query =
-      Book
-      |> maybe_filter_year(year)
+  query =
+    Book
+    |> maybe_filter_year(year)
+    |> maybe_search(search)
 
-    total_count = Repo.aggregate(query, :count, :id)
+  total_count = Repo.aggregate(query, :count, :id)
 
-    books =
-      query
-      |> limit(^per_page)
-      |> offset(^offset)
-      |> Repo.all()
+  books =
+    query
+    |> limit(^per_page)
+    |> offset(^offset)
+    |> Repo.all()
 
-    total_pages = div(total_count + per_page - 1, per_page)
+  total_pages = div(total_count + per_page - 1, per_page)
 
-    metadata = %{
-      page: page,
-      total_pages: total_pages,
-      total_count: total_count
-    }
+  metadata = %{
+    page: page,
+    total_pages: total_pages,
+    total_count: total_count
+  }
 
-    {books, metadata}
-  end
+  {books, metadata}
+end
 
-  defp maybe_filter_year(query, nil), do: query
-  defp maybe_filter_year(query, ""), do: query
-  defp maybe_filter_year(query, year), do: where(query, [b], b.published_year == ^year)
+defp maybe_filter_year(query, nil), do: query
+defp maybe_filter_year(query, ""), do: query
+defp maybe_filter_year(query, year), do: where(query, [b], b.published_year == ^year)
+
+defp maybe_search(query, ""), do: query
+defp maybe_search(query, nil), do: query
+defp maybe_search(query, search) do
+  like = "%#{search}%"
+  where(query, [b], ilike(b.title, ^like) or ilike(b.author, ^like))
+end
+
 
   # Fallback
   def list_books(), do: list_books(%{})
