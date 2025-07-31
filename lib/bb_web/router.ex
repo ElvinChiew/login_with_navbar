@@ -1,4 +1,5 @@
 defmodule BbWeb.Router do
+  #alias BbWeb.BookLive
   use BbWeb, :router
 
   import BbWeb.UserAuth
@@ -29,6 +30,7 @@ defmodule BbWeb.Router do
 
     # adding extra pages
     live "/books/extra", BookLive.Extra
+    live "/books/bookdboard", BookLive.Bookdboard
     live "/books/bookpage", BookLive.Bookpage
 
     live "/books/:id", BookLive.Show, :show
